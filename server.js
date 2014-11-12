@@ -19,6 +19,51 @@ app.use(multer({
 }));
 app.use(express.static(__dirname + '/static'));
 
+app.get('/project/all', function(req, res) {
+  mongoose.Project.find({}, '_id versions', function(err, projects) {
+    if (err) {
+      console.log(err);
+      return res.status(500).send({ success: false, error: "Error when fetching projects." });
+    }
+
+    res.status(200).send({ success: true, projects: (projects ? projects : []) });
+  });
+});
+
+app.get('/project/one/:name', function(req, res) {
+  mongoose.Project.findOne({ _id: req.params.name }, '_id versions latest', function(err, project) {
+    if (err) {
+      console.log(err);
+      return res.status(500).send({ success: false, error: "Error when fetching projects." });
+    }
+
+    if (!project) {
+      console.log(project);
+      return res.status(404).send({ success: false, error: ("Project not found: " + req.params.name) });
+    }
+
+    res.status(200).send({ success: true, project: project });
+  });
+});
+
+app.post('/project/new', function(req, res) {
+
+  var project = new mongoose.Project({ _id: req.body.name });
+  project.save(function (err) {
+    if (err) {
+
+      if (err.code === 11000) {
+        return res.status(500).send({ success: false, error: "Project name already exists"});
+      } else {
+        return res.status(500).send({ success: false, error: "unexpected error"});
+      }
+
+    }
+
+    res.status(200).send({ success: true });
+  });
+});
+
 app.post('/project/:name/up/:versionName', function (req, res) {
   mongoose.Project.findOne({ _id: req.params.name }, function (err, project) {
     if (err) {
@@ -108,50 +153,7 @@ app.get('/project/:name/:release', function(req, res) {
 
 });
 
-app.get('/project/all', function(req, res) {
-  mongoose.Project.find({}, '_id versions', function(err, projects) {
-    if (err) {
-      console.log(err);
-      return res.status(500).send({ success: false, error: "Error when fetching projects." });
-    }
 
-    res.status(200).send({ success: true, projects: (projects ? projects : []) });
-  });
-});
-
-app.get('/project/one/:name', function(req, res) {
-  mongoose.Project.findOne({ _id: req.params.name }, '_id versions latest', function(err, project) {
-    if (err) {
-      console.log(err);
-      return res.status(500).send({ success: false, error: "Error when fetching projects." });
-    }
-
-    if (!project) {
-      console.log(project);
-      return res.status(404).send({ success: false, error: ("Project not found: " + req.params.name) });
-    }
-
-    res.status(200).send({ success: true, project: project });
-  });
-});
-
-app.post('/project/new', function(req, res) {
-
-  var project = new mongoose.Project({ _id: req.body.name });
-  project.save(function (err) {
-    if (err) {
-
-      if (err.code === 11000) {
-        return res.status(500).send({ success: false, error: "Project name already exists"});
-      } else {
-        return res.status(500).send({ success: false, error: "unexpected error"});
-      }
-
-    }
-
-    res.status(200).send({ success: true });
-  });
-});
 
 var server = app.listen(3000, function () {
     console.log('listening on port %d', server.address().port);
