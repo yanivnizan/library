@@ -110,7 +110,7 @@ app.post('/project/:name/:releaseName/delete', function (req, res) {
             if (!releases) {
               project.latest = null;
             } else {
-              project.latest = releases[0].id;
+              project.latest = releases[0].version;
             }
             project.save();
           });
@@ -222,7 +222,9 @@ app.get('/project/:name/latest', function (req, res) {
         ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
         remote_ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
         project: project.id,
-        release: 'latest'
+        release: release.id,
+        version: release.version,
+        latest: true
       });
 
       res.setHeader("content-disposition", "attachment; filename='" + release.filename + "'");
@@ -261,7 +263,9 @@ app.get('/project/:name/:release', function (req, res) {
         ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
         remote_ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
         project: project.id,
-        release: release.id
+        release: release.id,
+        version: release.version,
+        latest: true
       });
 
       res.setHeader("content-disposition", "attachment; filename='" + release.filename + "'");
