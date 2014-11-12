@@ -40,146 +40,18 @@ try {
         {
           _id: String,
           latest: String,
-          versions: [versionSchema]
+          releases: [String]
         }),
-      versionSchema = mongoose.Schema(
+      releaseSchema = mongoose.Schema(
         {
           _id: String,
+          projectId: String,
           filename: String,
           localFilename: String
         }
       );
-//      dailyGameCountryAnalyticsSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          _metadata: {},
-//          revenue: Number,
-//          totalEvents: Number,
-//          sessions: Number,
-//          avgDuration: Number
-//        }),
-//      dailyGameCountryDeviceFamilyAnalyticsSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          _metadata: {},
-//          revenue: Number,
-//          totalEvents: Number,
-//          sessions: Number,
-//          avgDuration: Number
-//        }),
-//      dailyGameDeviceFamilyAnalyticsSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          _metadata: {},
-//          revenue: Number,
-//          totalEvents: Number,
-//          sessions: Number,
-//          avgDuration: Number
-//        }),
-//      dailyUidGameAnalyticsSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          _metadata: {},
-//          startedLevels: Number,
-//          completedLevels: Number,
-//          endedLevels: Number,
-//          completedMissions: Number,
-//          revenue: Number,
-//          totalEvents: Number,
-//          sessions: Number,
-//          avgDuration: Number,
-//          brokenRecords: {}
-//        }
-//      ),
-//      uidGameAnalyticsSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          _metadata: {},
-//          conversionStats: {},
-//          buyer: Boolean,
-//          startedLevels: Number,
-//          completedLevels: Number,
-//          endedLevels: Number,
-//          completedMissions: Number,
-//          revenue: Number,
-//          totalEvents: Number,
-//          sessions: Number,
-//          avgDuration: Number
-//        }
-//      ),
-//      socialUserSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          _metadata: {},  // { provider: String, sUid: String }
-//          lastConnected: Date
-//        }
-//      ),
-//      deviceSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          idfa: String,
-//          platform: String,
-//          deviceFamily: String,
-//          countryCode: String
-//        }
-//      ),
-//      uidSchema = mongoose.Schema(
-//        {
-//          devices: [String], // ["blabla", "blabla"]
-//          facebook: String,
-//          google: String,
-//          twitter: String,
-//          apple: String,
-//          instagram: String
-//        }
-//      ),
-//      uidGameStorageSchema = mongoose.Schema(
-//        {
-//          _id: String,
-//          _metadata: {},
-//          balances: {},
-//          state: {},
-//          other: {}
-//        }
-//      ),
-//      environmentSchema = mongoose.Schema(
-//        {
-//          name: String,
-//          key: String,
-//          createdAt: String,
-//          economyModel: {},
-//          levelupModel: {},
-//          fetchEconomyModel: Boolean,
-//          fetchLevelUpModel: Boolean
-//        }
-//      ),
-//      gameSchema = mongoose.Schema(
-//        {
-//          gameKey: String,
-//          environments: [environmentSchema]  // [{ name: development, key: 389d9c8h398h, createdAt: date, models: {} }]
-//        }
-//      )
-//      ;
-//
-////    balanceSchema.statics.findAndModify = function (query, sort, doc, options, callback) {
-////      return this.collection.findAndModify(query, sort, doc, options, callback);
-////    };
-//
-//
-//    return {
-//      DailyGameCountryAnalytics: mongoose.model('daily_game_country_analytics', dailyGameCountryAnalyticsSchema),
-//      DailyGameCountryDeviceFamilyAnalytics: mongoose.model('daily_game_country_devicefamily_analytics', dailyGameCountryDeviceFamilyAnalyticsSchema),
-//      DailyGameDeviceFamilyAnalytics: mongoose.model('daily_game_devicefamily_analytics', dailyGameDeviceFamilyAnalyticsSchema),
-//      DailyUidGameAnalytics: mongoose.model('daily_uid_game_analytics', dailyUidGameAnalyticsSchema),
-//      UidGameAnalytics: mongoose.model('uid_game_analytics', uidGameAnalyticsSchema),
-//      UidGameStorage: mongoose.model('uid_game_storages', uidGameStorageSchema),
-//      Uid: mongoose.model('uids', uidSchema),
-//      Device: mongoose.model('devices', deviceSchema),
-//      SocialUser: mongoose.model('social_users', socialUserSchema),
-//      Game: mongoose.model('games', gameSchema),
-//      Event: mongoose.model('events', eventSchema)
-//    };
 
 module.exports = {
-  Project: mongoose.model('projects', projectSchema)
+  Project: mongoose.model('projects', projectSchema),
+  Release: mongoose.model('releases', releaseSchema)
 };

@@ -90,13 +90,13 @@
             $.get('/project/' + $('#projects').val(), function (data) {
                 if (data.success) {
                     var project = data.project;
-                    var releases = project.versions;
+                    var releases = project.releases;
                     $('#releases')
                             .find('li')
                             .remove();
                     releases.forEach(function (r) {
-                        var rText = r._id;
-                        if (r._id===project.latest) {
+                        var rText = r;
+                        if (r===project.latest) {
                             rText += ' <b style="color: green"><em>(latest)</em></b>';
                         }
                         $('#releases')
