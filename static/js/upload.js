@@ -34,9 +34,10 @@ $(function () {
     var formData = new FormData();
     var file = document.getElementById('userFileInput').files[0];
     formData.append('userFile', file);
+    formData.append('latest', $('#latestVal:checked').val());
     var xhr = new XMLHttpRequest();
     xhr.overrideMimeType('application/json');
-    xhr.open('post', '/project/' + project +'/up/' + release, true);
+    xhr.open('post', '/project/' + project +'/' + release + '/upload', true);
     xhr.upload.onprogress = function (e) {
       if (e.lengthComputable)
         setProgress(Math.round((e.loaded / e.total) * 100));

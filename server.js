@@ -63,7 +63,8 @@ app.post('/project/new', function (req, res) {
   });
 });
 
-app.post('/project/:name/up/:releaseName', function (req, res) {
+
+app.post('/project/:name/:releaseName/delete', function (req, res) {
   mongoose.Project.findOne({ _id: req.params.name }, function (err, project) {
     if (err) {
       console.log(err);
@@ -75,30 +76,115 @@ app.post('/project/:name/up/:releaseName', function (req, res) {
       return res.status(500).send({ success: false, error: 'Cant find project: ' + req.params.name });
     }
 
-    project.latest = req.params.releaseName;
-
-    mongoose.Release.update({ _id: req.params.releaseName },
-      { filename: req.files.userFile.originalname, localFilename: req.files.userFile.name, projectId: project.id },
-      { upsert: true })
-      .exec();
-
-    if (!_.contains(project.releases, req.params.releaseName)) {
-      project.releases.push(req.params.releaseName);
-    }
-
-    project.save(function (err) {
+    mongoose.Release.findOne({ _id: req.params.releaseName, projectId: project.id }, function(err, release) {
       if (err) {
         console.log(err);
-        return res.status(500).send({ success: false, error: "Error when trying to save latest to project." });
+        return res.status(500).send({ success: false, error: "Error when trying to fetch release: " + req.params.releaseName });
       }
 
+      if (!release) {
+        console.log(err);
+        return res.status(500).send({ success: false, error: "Can't find the required release to delete: " + req.params.releaseName });
+      }
+
+      fs.delete('./static/projects/' + project.id + '/' + release.localFilename);
+      release.remove(function(err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send({ success: false, error: "Error when trying to remove release: " + req.params.releaseName });
+        }
+
+        mongoose.Release
+          .find({ projectId: project.id })
+          .sort({ 'added': -1 })
+          .limit(1)
+          .exec(function (err, releases) {
+            if (err) {
+              console.log(err);
+              return res.status(500).send({ success: false, error: "Error when fetching releases for setting new latest." });
+            }
+
+            if (!releases) {
+              project.latest = null;
+            } else {
+              project.latest = releases[0].id;
+            }
+            project.save();
+          });
+      });
+    });
+
+
+
+  });
+});
+
+app.post('/project/:name/:releaseName/upload', function (req, res) {
+  mongoose.Project.findOne({ _id: req.params.name }, function (err, project) {
+    if (err) {
+      console.log(err);
+      return res.status(500).send({ success: false, error: "Error when fetching project." });
+    }
+
+    if (!project) {
+      console.log('Cant find project: ' + req.params.name);
+      return res.status(500).send({ success: false, error: 'Cant find project: ' + req.params.name });
+    }
+
+
+    var postReleaseSave = function() {
       fs.move('./static/uploads/' + req.files.userFile.name,
           './static/projects/' + req.params.name + '/' + req.files.userFile.name,
         { clobber: true },
         function (err) {
         });
 
-      res.status(200).send({ success: true });
+      if (!_.contains(project.releases, req.params.releaseName)) {
+        project.releases.push(req.params.releaseName);
+      }
+
+      if (req.body.latest === 'on') {
+        project.latest = req.params.releaseName;
+      }
+
+      project.save(function (err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send({ success: false, error: "Error when trying to save latest to project." });
+        }
+
+        res.status(200).send({ success: true });
+      });
+
+    };
+
+    mongoose.Release.findOne({ _id: req.params.releaseName, projectId: project.id }, function(err, release) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ success: false, error: "Error when fetching latest release." });
+      }
+
+      if (!release) {
+        release = new mongoose.Release({
+          _id: req.params.releaseName,
+          filename: req.files.userFile.originalname,
+          localFilename: req.files.userFile.name,
+          projectId: project.id,
+          added: new Date()
+        });
+      } else {
+        fs.delete('./static/projects/' + project.id + '/' + release.localFilename);
+        release.localFilename = req.files.userFile.name;
+        release.filename = req.files.userFile.originalname;
+      }
+      release.save(function (err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send({ success: false, error: "Error when trying to save release." });
+        }
+
+        postReleaseSave();
+      });
     });
 
   });
@@ -125,7 +211,7 @@ app.get('/project/:name/latest', function (req, res) {
 
       if (!project) {
         console.log('Cant find project: ' + req.params.name);
-        return res.status(500).send({ success: false, error: 'Cant find latest release: ' + project.latest });
+        return res.status(404).send({ success: false, error: 'Cant find latest release: ' + project.latest });
       }
 
       res.setHeader("content-disposition", "attachment; filename='" + release.filename + "'");

@@ -47,7 +47,8 @@ try {
           _id: String,
           projectId: String,
           filename: String,
-          localFilename: String
+          localFilename: String,
+          added: Date
         }
       );
 
