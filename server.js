@@ -19,7 +19,7 @@ app.use(multer({
 }));
 app.use(express.static(__dirname + '/static'));
 
-app.get('/project/all', function(req, res) {
+app.get('/projects', function(req, res) {
   mongoose.Project.find({}, '_id versions', function(err, projects) {
     if (err) {
       console.log(err);
@@ -30,7 +30,7 @@ app.get('/project/all', function(req, res) {
   });
 });
 
-app.get('/project/one/:name', function(req, res) {
+app.get('/project/:name', function(req, res) {
   mongoose.Project.findOne({ _id: req.params.name }, '_id versions latest', function(err, project) {
     if (err) {
       console.log(err);

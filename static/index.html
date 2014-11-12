@@ -68,7 +68,7 @@
 <script>
     $(function () {
         var refreshProjectsList = function () {
-            $.get('/project/all', function (data) {
+            $.get('/projects', function (data) {
                 if (data) {
                     var projects = data.projects;
                     $('#projects')
@@ -87,7 +87,7 @@
         refreshProjectsList();
 
         $('#projects').change(function () {
-            $.get('/project/one/' + $('#projects').val(), function (data) {
+            $.get('/project/' + $('#projects').val(), function (data) {
                 if (data.success) {
                     var project = data.project;
                     var releases = project.versions;
