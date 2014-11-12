@@ -1,0 +1,17 @@
+{
+    "name": "library",
+    "description": "Keeping track of your SDK downloads",
+    "version": "0.0.1",
+    "engines": {
+        "node": ">= 0.10.x"
+    },
+    "private": true,
+    "dependencies": {
+        "express": "*",
+        "multer": "*",
+      "body-parser": "*",
+      "mongoose": "*",
+      "fs-extra": "*",
+      "underscore":  "*"
+    }
+}
