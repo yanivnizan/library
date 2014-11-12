@@ -95,7 +95,7 @@
                             .find('li')
                             .remove();
                     releases.forEach(function (r) {
-                        var rText = r;
+                        var rText = '<a href="/project/' + project._id + '/' + r + '">' + r + '</a>';
                         if (r===project.latest) {
                             rText += ' <b style="color: green"><em>(latest)</em></b>';
                         }
