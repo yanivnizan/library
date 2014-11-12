@@ -6,6 +6,9 @@ var express = require('express'),
 var mongoose = require('./mongoose');
 var fs = require('fs-extra');
 var _ = require('underscore');
+var Mixpanel = require('mixpanel');
+
+var mixpanel = Mixpanel.init('f67499876bf3970d8810d066550124fe');
 
 
 app.use(bodyParser.json());
@@ -214,6 +217,13 @@ app.get('/project/:name/latest', function (req, res) {
         return res.status(404).send({ success: false, error: 'Cant find latest release: ' + project.latest });
       }
 
+      mixpanel.track("library_download", {
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        remote_ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        project: project.id,
+        release: 'latest'
+      });
+
       res.setHeader("content-disposition", "attachment; filename='" + release.filename + "'");
       var readFile = fs.createReadStream('./static/projects/' + req.params.name + '/' + release.localFilename);
       readFile.pipe(res);
@@ -245,6 +255,13 @@ app.get('/project/:name/:release', function (req, res) {
         console.log('Cant find release: ' + req.params.release);
         return res.status(500).send({ success: false, error: 'Cant find latest release: ' + req.params.release });
       }
+
+      mixpanel.track("library_download", {
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        remote_ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        project: project.id,
+        release: release.id
+      });
 
       res.setHeader("content-disposition", "attachment; filename='" + release.filename + "'");
       var readFile = fs.createReadStream('./static/projects/' + req.params.name + '/' + release.localFilename);
