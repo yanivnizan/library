@@ -79,7 +79,7 @@ app.post('/project/:name/:releaseName/delete', function (req, res) {
       return res.status(500).send({ success: false, error: 'Cant find project: ' + req.params.name });
     }
 
-    mongoose.Release.findOne({ _id: req.params.releaseName, projectId: project.id }, function(err, release) {
+    mongoose.Release.findOne({ _id: (req.params.releaseName+'/'+project.id)}, function(err, release) {
       if (err) {
         console.log(err);
         return res.status(500).send({ success: false, error: "Error when trying to fetch release: " + req.params.releaseName });
@@ -161,7 +161,7 @@ app.post('/project/:name/:releaseName/upload', function (req, res) {
 
     };
 
-    mongoose.Release.findOne({ _id: req.params.releaseName, projectId: project.id }, function(err, release) {
+    mongoose.Release.findOne({ _id: (req.params.releaseName+'/'+project.id) }, function(err, release) {
       if (err) {
         console.log(err);
         return res.status(500).send({ success: false, error: "Error when fetching latest release." });
@@ -169,10 +169,11 @@ app.post('/project/:name/:releaseName/upload', function (req, res) {
 
       if (!release) {
         release = new mongoose.Release({
-          _id: req.params.releaseName,
+          _id: (req.params.releaseName+'/'+project.id),
           filename: req.files.userFile.originalname,
           localFilename: req.files.userFile.name,
           projectId: project.id,
+          version: req.params.releaseName,
           added: new Date()
         });
       } else {
@@ -205,7 +206,7 @@ app.get('/project/:name/latest', function (req, res) {
       return res.status(500).send({ success: false, error: 'Cant find project: ' + req.params.name });
     }
 
-    mongoose.Release.findOne({ _id: project.latest, projectId: project.id }, function (err, release) {
+    mongoose.Release.findOne({ _id: (project.latest+'/'+project.id) }, function (err, release) {
 
       if (err) {
         console.log(err);
@@ -244,7 +245,7 @@ app.get('/project/:name/:release', function (req, res) {
       return res.status(500).send({ success: false, error: 'Cant find project: ' + req.params.name });
     }
 
-    mongoose.Release.findOne({ _id: req.params.release, projectId: project.id }, function (err, release) {
+    mongoose.Release.findOne({ _id: (req.params.release+'/'+project.id) }, function (err, release) {
 
       if (err) {
         console.log(err);

@@ -46,6 +46,7 @@ try {
         {
           _id: String,
           projectId: String,
+          version: String,
           filename: String,
           localFilename: String,
           added: Date
