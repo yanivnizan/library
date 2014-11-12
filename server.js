@@ -50,7 +50,7 @@ app.get('/project/:name', function (req, res) {
 
 app.post('/project/new', function (req, res) {
 
-  var project = new mongoose.Project({ _id: req.body.name });
+  var project = new mongoose.Project({ _id: req.body.name, platform: req.body.platform });
   project.save(function (err) {
     if (err) {
 
@@ -59,7 +59,6 @@ app.post('/project/new', function (req, res) {
       } else {
         return res.status(500).send({ success: false, error: "unexpected error"});
       }
-
     }
 
     res.status(200).send({ success: true });
@@ -224,6 +223,7 @@ app.get('/project/:name/latest', function (req, res) {
         project: project.id,
         release: release.id,
         version: release.version,
+        platform: project.platform,
         latest: true
       });
 
@@ -265,6 +265,7 @@ app.get('/project/:name/:release', function (req, res) {
         project: project.id,
         release: release.id,
         version: release.version,
+        platform: project.platform,
         latest: true
       });
 

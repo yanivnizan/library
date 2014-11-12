@@ -30,7 +30,14 @@
       enctype="multipart/form-data"
       action="/project/new"
       method="post">
-    <input type="text" id="pNameInput" name="name" width="100"/>
+    Name: <input type="text" id="pNameInput" name="name" width="100"/><br>
+    Platform:
+    <select id="pPlatformInput">
+        <option>Unity</option>
+        <option>Android</option>
+        <option>iOS</option>
+        <option>Cocos2dx</option>
+    </select><br>
     <input id="newProjectFormSubmit" type="submit" value="Add"/>
 </form>
 
@@ -114,7 +121,12 @@
                 alert('Please provide a project name.');
                 return false;
             }
-            $.ajax({ type: 'POST', url: '/project/new', data: JSON.stringify({ name: projectName }),
+            var projectPlatform = $('#pPlatformInput').val();
+            if (!projectPlatform) {
+                alert('Please provide a project platform.');
+                return false;
+            }
+            $.ajax({ type: 'POST', url: '/project/new', data: JSON.stringify({ name: projectName, platform: projectPlatform }),
                         success: function (data) {
                             refreshProjectsList();
                             alert(projectName + ' added successfully.');

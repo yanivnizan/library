@@ -39,6 +39,7 @@ try {
     var projectSchema = mongoose.Schema(
         {
           _id: String,
+          platform: String,
           latest: String,
           releases: [String]
         }),
