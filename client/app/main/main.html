@@ -1,0 +1,127 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<header class="hero-unit" id="banner">
+    <div class="container">
+        <h1>'Allo, 'Allo!</h1>
+
+        <p class="lead">Kick-start your next web app with Angular Fullstack</p>
+        <img src="assets/images/yeoman.png" alt="I'm Yeoman">
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <!--<ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">-->
+            <!--<li><a href="#" tooltip="{{thing.info}}">{{thing.name}}</a></li>-->
+            <!--</ul>-->
+
+
+            <h1 class="page-header">Add Project</h1>
+
+            <form name="newProjectForm" ng-submit="submitNewProject()" id="newProjectForm" role="form">
+                <div class="form-group">
+                    <label for="pNameInput">Name</label>
+                    <input name="project" type="text" id="pNameInput" ng-required="true" ng-model="project._id" required project-available />
+                    <div class="user-help" ng-show="newProjectForm.project.$dirty && newProjectForm.project.$invalid">
+                        <alert type="danger" ng-show="newProjectForm.project.$error.required">Please enter your project.</alert>
+                        <alert type="danger" ng-show="newProjectForm.project.$error.project">This is not a valid project.</alert>
+                        <alert type="danger" ng-show="newProjectForm.project.$error.checkingProject">Checking project...</alert>
+                        <alert type="danger" ng-show="newProjectForm.project.$error.projectAvailable">Project not available</alert>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pPlatformInput">Platform:</label>
+
+                    <select id="pPlatformInput" ng-options="opt for opt in ['Unity','Android','iOS','Cocos2dx']" required class="form-control" ng-required="true" ng-model="project.platform" style="width: 200px;">
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button ng-disabled="newProjectForm.$invalid" id="newProjectFormSubmit" type="submit" class="btn btn-default">Add new Project !
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <style type="text/css" media="screen">
+        #progress {
+            width: 500px;
+            border: 1px solid black;
+            position: relative;
+            padding: 3px;
+        }
+
+        #percent {
+            position: absolute;
+            left: 50%;
+        }
+
+        #bar {
+            height: 20px;
+            background-color: green;
+            width: 0%;
+        }
+    </style>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Add Release</h1>
+
+            <div class="form-group">
+                <label for="projects">Project</label>
+                <select id="projects" class="form-control" ng-model="release.project"
+                        ng-options="project._id for project in projects" ng-change="refreshReleases(release.project._id)"
+                        style="width: 200px;" ng-required="true" required >
+                    <option value="" disabled selected>Select project</option>
+                </select>
+            </div>
+
+            <ul class="list-group" style="width: 200px;">
+                <li class="list-group-item" ng-repeat="release in projectReleases">
+                    <span class="badge alert-success" ng-if="release.isLatest">latest</span>
+                    <a target="_blank" href="/api/projects/{{release.projectId}}/{{release.version}}">{{release.version}}</a>
+                    <!--<b style="color: green" ng-if="release.isLatest"><em>(latest)</em></b>-->
+                </li>
+            </ul>
+
+            <form name="uploadReleaseForm" ng-submit="uploadRelease()" id="uploadForm" role="form">
+                <div class="form-group">
+                    <label for="version">Version</label>
+                    <input type="text" id="version" ng-model="release.version"/>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input id="latestVal" type="checkbox" ng-model="isLatest"> Latest
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="userFileInput">Select a release file</label>
+                    <!--<input type="file" id="userFileInput" fileread="userFile" >-->
+                    <input type="file" id="userFileInput" ng-file-select="onFileSelect($files)">
+                    <p class="help-block">Select the file to upload for the release.</p>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button ng-disabled="uploadReleaseForm.$invalid" id="uploadReleaseFormSubmit" type="submit" class="btn btn-default">Upload Release !
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <span ng-model="uploadStatus">{{uploadStatus}}</span>
+            <progressbar class="progress-striped active" value="uploadPercent" type="success"><b>{{uploadPercent}}%</b></progressbar>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p>Angular Fullstack v2.0.13 |
+            <a href="https://twitter.com/tyhenkel">@tyhenkel</a> |
+            <a href="https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open">Issues</a></p>
+    </div>
+</footer>
