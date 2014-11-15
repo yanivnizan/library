@@ -3,7 +3,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
-var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
   name: String,
@@ -13,7 +12,6 @@ var UserSchema = new Schema({
     default: 'user'
   },
   hashedPassword: String,
-  provider: String,
   salt: String,
   facebook: {},
   twitter: {},
@@ -63,7 +61,7 @@ UserSchema
 UserSchema
   .path('email')
   .validate(function(email) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
+    if (this.facebook || this.twitter || this.google || this.github) return true;
     return email.length;
   }, 'Email cannot be blank');
 
@@ -71,7 +69,7 @@ UserSchema
 UserSchema
   .path('hashedPassword')
   .validate(function(hashedPassword) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
+    if (this.facebook || this.twitter || this.google || this.github) return true;
     return hashedPassword.length;
   }, 'Password cannot be blank');
 
@@ -101,7 +99,7 @@ UserSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
 
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1)
+    if (!validatePresenceOf(this.hashedPassword) && !(this.facebook || this.twitter || this.google || this.github))
       next(new Error('Invalid password'));
     else
       next();

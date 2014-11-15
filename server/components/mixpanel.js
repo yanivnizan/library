@@ -1,4 +1,4 @@
 var Mixpanel = require('mixpanel');
+var config = require('../config/environment');
 
-//'f67499876bf3970d8810d066550124fe');
-module.exports = Mixpanel.init(process.env.MIXPANEL_ID);
+module.exports = Mixpanel.init(config.mixpanel.mixpanelId);

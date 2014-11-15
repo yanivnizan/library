@@ -53,16 +53,23 @@ angular.module('libraryApp')
        * Create a new user
        *
        * @param  {Object}   user     - user info
+       * @param  {Boolean}   changeCurrent     - also switch to the added user
        * @param  {Function} callback - optional
        * @return {Promise}
        */
-      createUser: function(user, callback) {
+      createUser: function(user, changeCurrent, callback) {
+        if (typeof changeCurrent === Function) {
+          callback = changeCurrent;
+        }
         var cb = callback || angular.noop;
 
         return User.save(user,
           function(data) {
             $cookieStore.put('token', data.token);
-            currentUser = User.get();
+            if (changeCurrent) {
+              $cookieStore.put('token', data.token);
+              currentUser = User.get();
+            }
             return cb(user);
           },
           function(err) {

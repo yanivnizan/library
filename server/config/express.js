@@ -18,6 +18,7 @@ var passport = require('passport');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
+var multer = require('multer');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -40,9 +41,13 @@ module.exports = function(app) {
     saveUninitialized: true,
     store: new mongoStore({ mongoose_connection: mongoose.connection })
   }));
-  
+
+  app.use(multer({
+    dest: path.join(config.root,'uploads', 'raw')
+  }));
+
   if ('production' === env) {
-    app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
+    app.use(favicon(path.join(config.root, 'public', 'favicon.png')));
     app.use(express.static(path.join(config.root, 'public')));
     app.set('appPath', config.root + '/public');
     app.use(morgan('dev'));

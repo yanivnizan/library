@@ -1,12 +1,35 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
 <div class="container">
-  <p>The delete user and user index api routes are restricted to users with the 'admin' role.</p>
-  <ul class="list-group">
-    <li class="list-group-item" ng-repeat="user in users">
-        <strong>{{user.name}}</strong><br>
-        <span class="text-muted">{{user.email}}</span>
-        <a ng-click="delete(user)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
-    </li>
-  </ul>
+    <h1>Users</h1>
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="user in users">
+            <strong>{{user.name}}</strong><br>
+            <span class="text-muted">{{user.email}}</span>
+            <button type="button" class="btn btn-primary" ng-model="user.isAdmin" btn-checkbox
+                    ng-change="saveRole(user)">
+                Admin
+            </button>
+
+            <a ng-click="delete(user)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
+            <span class="label label-danger pull-right" ng-show="user.google">google</span>
+            <span class="label label-primary pull-right" ng-show="user.facebook">facebook</span>
+            <span class="label label-info pull-right" ng-show="user.twitter">twitter</span>
+        </li>
+    </ul>
+    <br>
+    <br>
+    <br>
+
+    <form name="uploadReleaseForm" ng-submit="add()" role="form">
+        <div class="form-group">
+            <label for="inputEmail">Email address</label>
+            <input type="email" class="form-control" id="inputEmail" placeholder="Enter email" ng-model="userToAdd.email">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="userToAdd.password">
+        </div>
+        <button type="submit" class="btn btn-default">Add User</button>
+    </form>
 </div>

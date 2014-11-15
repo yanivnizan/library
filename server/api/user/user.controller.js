@@ -25,7 +25,6 @@ exports.index = function(req, res) {
  */
 exports.create = function (req, res, next) {
   var newUser = new User(req.body);
-  newUser.provider = 'local';
   newUser.role = 'user';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
@@ -79,6 +78,23 @@ exports.changePassword = function(req, res, next) {
   });
 };
 
+/**
+ * Change a users role
+ *
+ * Admin Only !!
+ */
+exports.changeRole = function(req, res, next) {
+  var userId = req.params.id;
+  var role = String(req.body.role);
+
+  User.findById(userId, function (err, user) {
+    user.role = role;
+    user.save(function(err) {
+      if (err) return validationError(res, err);
+      res.send(200);
+    });
+  });
+};
 /**
  * Get my info
  */

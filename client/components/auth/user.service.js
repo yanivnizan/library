@@ -12,6 +12,12 @@ angular.module('libraryApp')
           controller:'password'
         }
       },
+      changeRole: {
+        method: 'PUT',
+        params: {
+          controller:'role'
+        }
+      },
       get: {
         method: 'GET',
         params: {

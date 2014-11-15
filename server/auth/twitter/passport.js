@@ -19,7 +19,6 @@ exports.setup = function (User, config) {
           name: profile.displayName,
           username: profile.username,
           role: 'user',
-          provider: 'twitter',
           twitter: profile._json
         });
         user.save(function(err) {
