@@ -9,21 +9,25 @@ exports.setup = function (User, config) {
     },
     function (accessToken, refreshToken, profile, done) {
       User.findOne({
-        'email': profile.emails[0].value
-      }, function (err, user) {
-        if (!user) {
-          done('You are not allowed in here. Sorry :(');
-        } else {
-          user.name = profile.displayName;
-          user.email = profile.emails[0].value;
-          user.username = profile.username;
-          user.google = profile._json;
-          user.save(function (err) {
-            if (err) done(err);
-            return done(err, user);
-          });
-        }
-      });
+          'email': profile.emails[0].value
+        },
+        function (err, user) {
+          if (err) {
+            return done(err);
+          }
+          if (!user) {
+            done('You are not allowed in here. Sorry :(');
+          } else {
+            user.name = profile.displayName;
+            user.email = profile.emails[0].value;
+            user.username = profile.username;
+            user.google = profile._json;
+            user.save(function (err) {
+              if (err) done(err);
+              return done(err, user);
+            });
+          }
+        });
     }
   ));
 };

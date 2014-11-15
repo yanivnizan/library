@@ -7,30 +7,27 @@ exports.setup = function (User, config) {
       clientSecret: config.facebook.clientSecret,
       callbackURL: config.facebook.callbackURL
     },
-    function(accessToken, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
       User.findOne({
-        'facebook.id': profile.id
-      },
-      function(err, user) {
-        if (err) {
-          return done(err);
-        }
-        if (!user) {
-          user = new User({
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            role: 'user',
-            username: profile.username,
-            facebook: profile._json
-          });
-          user.save(function(err) {
-            if (err) done(err);
-            return done(err, user);
-          });
-        } else {
-          return done(err, user);
-        }
-      })
+          'email': profile.emails[0].value
+        },
+        function (err, user) {
+          if (err) {
+            return done(err);
+          }
+          if (!user) {
+            done('You are not allowed in here. Sorry :(');
+          } else {
+            user.name = profile.displayName;
+            user.email = profile.emails[0].value;
+            user.username = profile.username;
+            user.facebook = profile._json;
+            user.save(function (err) {
+              if (err) done(err);
+              return done(err, user);
+            });
+          }
+        })
     }
   ));
 };

@@ -14,9 +14,7 @@ var UserSchema = new Schema({
   hashedPassword: String,
   salt: String,
   facebook: {},
-  twitter: {},
-  google: {},
-  github: {}
+  google: {}
 });
 
 /**
@@ -61,7 +59,7 @@ UserSchema
 UserSchema
   .path('email')
   .validate(function(email) {
-    if (this.facebook || this.twitter || this.google || this.github) return true;
+    if (this.facebook || this.google) return true;
     return email.length;
   }, 'Email cannot be blank');
 
@@ -69,7 +67,7 @@ UserSchema
 UserSchema
   .path('hashedPassword')
   .validate(function(hashedPassword) {
-    if (this.facebook || this.twitter || this.google || this.github) return true;
+    if (this.facebook || this.google) return true;
     return hashedPassword.length;
   }, 'Password cannot be blank');
 
@@ -99,7 +97,7 @@ UserSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
 
-    if (!validatePresenceOf(this.hashedPassword) && !(this.facebook || this.twitter || this.google || this.github))
+    if (!validatePresenceOf(this.hashedPassword) && !(this.facebook || this.google))
       next(new Error('Invalid password'));
     else
       next();

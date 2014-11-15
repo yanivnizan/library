@@ -19,8 +19,7 @@
       "auth": true,
       "oauth": true,
       "googleAuth": true,
-      "facebookAuth": true,
-      "twitterAuth": true
+      "facebookAuth": true
     }
   },
   "generator-ng-component": {
