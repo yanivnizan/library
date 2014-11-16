@@ -3,9 +3,15 @@
 angular.module('libraryApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
     $scope.menu = [{
-      'title': 'Home',
-      'link': '/'
+      'title': 'Projects',
+      'link': '/projects'
     }];
+    if (Auth.isAdmin) {
+      $scope.menu.push({
+        'title': 'Admin',
+        'link': '/admin'
+      });
+    }
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;

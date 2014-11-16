@@ -6,7 +6,8 @@ angular.module('libraryApp', [
   'ngSanitize',
   'ui.router',
   'ui.bootstrap',
-  'angularFileUpload'
+  'angularFileUpload',
+  'ngMaterial'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
